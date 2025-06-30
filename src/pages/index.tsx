@@ -1,9 +1,38 @@
 import { ReactNode } from "react";
 import SearchableLayout from "./components/searchable-layout";
+import movieData from "@/mock/dummy.json";
+import style from "./index.module.css";
+import MovieItem from "./components/movie-item";
+
 export default function Home() {
+  const recoMovies = movieData.slice(0, 3);
+  const allMovies = movieData;
+
   return (
     <>
-      <h2>ONEBITE CINEMA</h2>
+      <div className={style.container}>
+        <h2 className={style.title}>지금 가장 추천하는 영화</h2>
+        <div
+          className={style.movieList}
+          style={{ "--items-per-row": "3" } as React.CSSProperties}
+        >
+          {recoMovies.map((movie) => (
+            <MovieItem key={movie.id} {...movie} />
+          ))}
+        </div>
+      </div>
+
+      <div className={style.container}>
+        <h2 className={style.title}>등록된 모든 영화</h2>
+        <div
+          className={style.movieList}
+          style={{ "--items-per-row": "5" } as React.CSSProperties}
+        >
+          {allMovies.map((movie) => (
+            <MovieItem key={movie.id} {...movie} />
+          ))}
+        </div>
+      </div>
     </>
   );
 }

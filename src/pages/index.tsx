@@ -1,13 +1,29 @@
 import { ReactNode } from "react";
 import SearchableLayout from "./components/searchable-layout";
-import movieData from "@/mock/dummy.json";
 import style from "./index.module.css";
 import MovieItem from "./components/movie-item";
+import { InferGetServerSidePropsType } from "next";
+import fetchMovies from "@/lib/fetch-movies";
+import fetchRandomMovies from "@/lib/fetch-random-movies";
 
-export default function Home() {
-  const recoMovies = movieData.slice(0, 3);
-  const allMovies = movieData;
+export const getServerSideProps = async () => {
+  const [allMovies, randomMovies] = await Promise.all([
+    fetchMovies(),
+    fetchRandomMovies(),
+  ]);
 
+  return {
+    props: {
+      allMovies,
+      randomMovies,
+    },
+  };
+};
+
+export default function Home({
+  allMovies,
+  randomMovies,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <div className={style.container}>
@@ -16,7 +32,7 @@ export default function Home() {
           className={style.movieList}
           style={{ "--items-per-row": "3" } as React.CSSProperties}
         >
-          {recoMovies.map((movie) => (
+          {randomMovies?.map((movie) => (
             <MovieItem key={movie.id} {...movie} />
           ))}
         </div>

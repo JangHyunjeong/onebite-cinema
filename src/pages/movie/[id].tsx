@@ -1,42 +1,59 @@
-import { useRouter } from "next/router";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import style from "./[id].module.css";
-import movieData from "@/mock/dummy.json";
-import type { MovieDataType } from "@/type";
+import fetchMovie from "@/lib/fetch-movie";
 
-export default function Movie() {
-  const router = useRouter();
-  const { id } = router.query;
-  const movie = (movieData as MovieDataType[]).find(
-    (item) => String(id) === String(item.id)
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const id = context.params!.id;
+  const movie = await fetchMovie(Number(id));
+
+  return {
+    props: {
+      movie,
+    },
+  };
+};
+
+export default function Movie({
+  movie,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  if (!movie) return <>조회된 결과가 없습니다.</>;
+
+  const {
+    posterImgUrl,
+    title,
+    releaseDate,
+    runtime,
+    company,
+    subTitle,
+    description,
+  } = movie;
+
+  return (
+    <>
+      <div
+        className={style.thumbWrap}
+        style={
+          {
+            "--poster-img-url": `url(${posterImgUrl})`,
+          } as React.CSSProperties
+        }
+      >
+        <img src={posterImgUrl} alt={title} />
+      </div>
+      <div className={style.content}>
+        <p className={style.title}>{title}</p>
+        <div className={style.infos}>
+          <p>
+            {releaseDate} / {releaseDate} / {runtime}분
+          </p>
+          <p>{company}</p>
+        </div>
+
+        <p className={style.subTitle}>{subTitle}</p>
+        <p className={style.desc}>{description}</p>
+      </div>
+    </>
   );
-
-  if (!movie) return <>데이터 오류!</>;
-  else {
-    return (
-      <>
-        <div
-          className={style.thumbWrap}
-          style={
-            {
-              "--poster-img-url": `url(${movie.posterImgUrl})`,
-            } as React.CSSProperties
-          }
-        >
-          <img src={movie.posterImgUrl} alt={movie.title} />
-        </div>
-        <div className={style.content}>
-          <p className={style.title}>{movie.title}</p>
-          <div className={style.infos}>
-            <p>
-              {movie.releaseDate} / {movie.genres} / {movie.runtime}분
-            </p>
-            <p>{movie.company}</p>
-          </div>
-
-          <p className={style.subTitle}>{movie.subTitle}</p>
-          <p className={style.desc}>{movie.description}</p>
-        </div>
-      </>
-    );
-  }
 }

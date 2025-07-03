@@ -4,6 +4,7 @@ import MovieItem from "../components/movie-item";
 import style from "./index.module.css";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
+import Head from "next/head";
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
@@ -23,6 +24,15 @@ export default function Search({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
+      <Head>
+        <title>한입시네마 - 검색결과</title>
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:title" content="한입시네마 - 검색결과" />
+        <meta
+          property="og:description"
+          content="재미있는 영화를 추천해주는 한입 시네마"
+        />
+      </Head>
       <div>
         <div
           className={style.movieList}

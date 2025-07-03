@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import style from "./[id].module.css";
 import fetchMovie from "@/lib/fetch-movie";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export const getStaticPaths = async () => {
   return {
@@ -30,7 +31,21 @@ export default function Movie({
   movie,
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
   const router = useRouter();
-  if (router.isFallback) return <>로딩중</>;
+  if (router.isFallback)
+    return (
+      <>
+        <Head>
+          <title>한입시네마</title>
+          <meta property="og:image" content="/thumbnail.png" />
+          <meta property="og:title" content="한입시네마" />
+          <meta
+            property="og:description"
+            content="재미있는 영화를 추천해주는 한입 시네마"
+          />
+        </Head>
+        <p>로딩중</p>
+      </>
+    );
   if (!movie) return <>조회된 결과가 없습니다.</>;
   const {
     posterImgUrl,
@@ -43,6 +58,12 @@ export default function Movie({
   } = movie;
   return (
     <>
+      <Head>
+        <title>{title}</title>
+        <meta property="og:image" content={posterImgUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+      </Head>
       <div
         className={style.thumbWrap}
         style={

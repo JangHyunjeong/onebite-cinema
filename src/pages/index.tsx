@@ -5,6 +5,7 @@ import MovieItem from "./components/movie-item";
 import { InferGetStaticPropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
 import fetchRandomMovies from "@/lib/fetch-random-movies";
+import Head from "next/head";
 
 export const getStaticProps = async () => {
   const [allMovies, randomMovies] = await Promise.all([
@@ -27,6 +28,15 @@ export default function Home({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
+      <Head>
+        <title>한입시네마</title>
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:title" content="한입시네마" />
+        <meta
+          property="og:description"
+          content="재미있는 영화를 추천해주는 한입 시네마"
+        />
+      </Head>
       <div className={style.container}>
         <h2 className={style.title}>지금 가장 추천하는 영화</h2>
         <div
